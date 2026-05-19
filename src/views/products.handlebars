@@ -1,0 +1,36 @@
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1>Lista de Productos</h1>
+    <a href="#" id="viewCartBtn" class="btn" style="display: none; background-color: #28a745;">Ver Mi Carrito</a>
+</div>
+
+<div>
+    {{#each products}}
+    <div class="product-card">
+        <h3>{{this.title}}</h3>
+        <p>Precio: ${{this.price}}</p>
+        <p>Categoría: {{this.category}}</p>
+        <a href="/products/{{this._id}}" class="btn">Ver Detalles</a>
+    </div>
+    {{/each}}
+</div>
+
+<div class="pagination">
+    {{#if hasPrevPage}}
+        <a href="{{prevLink}}">Anterior</a>
+    {{/if}}
+    
+    <span>Página {{page}} de {{totalPages}}</span>
+
+    {{#if hasNextPage}}
+        <a href="{{nextLink}}">Siguiente</a>
+    {{/if}}
+</div>
+
+<script>
+    const cartId = localStorage.getItem('cartId');
+    const viewCartBtn = document.getElementById('viewCartBtn');
+    if (cartId) {
+        viewCartBtn.href = `/carts/${cartId}`;
+        viewCartBtn.style.display = 'inline-block';
+    }
+</script>
