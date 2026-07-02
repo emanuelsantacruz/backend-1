@@ -6,10 +6,17 @@ import mongoose from 'mongoose';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
+import passport from 'passport';
+import { initializePassport } from './config/passport.config.js';
+
 import productsRouter from './routes/products.router.js';
 import cartsRouter from './routes/carts.router.js';
 import viewsRouter from './routes/views.router.js';
-import ProductManagerMongo from './dao/mongo/ProductManagerMongo.js';
+import authRouter from './routes/auth.router.js';
+import { productManager } from './dao/factory.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,14 +26,43 @@ const PORT = process.env.PORT || 8080;
 
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/ecommerce';
-mongoose.connect(MONGO_URI)
-    .then(() => console.log('Conectado a la base de Mongo!'))
-    .catch(err => console.error('Error al conectar a MongoDB:', err));
+if (process.env.PERSISTENCE !== 'FS') {
+    mongoose.connect(MONGO_URI)
+        .then(() => console.log('Conectado a la base de Mongo!'))
+        .catch(err => console.error('Error al conectar a MongoDB:', err));
+}
 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
+
+const sessionOptions = {
+    secret: process.env.SESSION_SECRET || 'secretSessionKey',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        maxAge: 86400000 // 24 horas
+    }
+};
+
+if (process.env.PERSISTENCE !== 'FS') {
+    sessionOptions.store = MongoStore.create({
+        mongoUrl: MONGO_URI,
+        ttl: 86400, // 24 horas
+        crypto: {
+            secret: process.env.SESSION_SECRET || 'secretSessionKey'
+        }
+    });
+}
+
+app.use(session(sessionOptions));
+
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 app.engine('handlebars', engine());
@@ -36,6 +72,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
+app.use('/', authRouter);
 app.use('/', viewsRouter);
 
 
@@ -47,7 +84,7 @@ const httpServer = app.listen(PORT, () => {
 const io = new Server(httpServer);
 app.set('socketio', io);
 
-const productManager = new ProductManagerMongo();
+// productManager is imported from factory
 
 io.on('connection', async (socket) => {
     console.log('Nuevo cliente conectado al socket:', socket.id);
@@ -73,3 +110,6 @@ io.on('connection', async (socket) => {
         }
     });
 });
+
+export { app, httpServer };
+

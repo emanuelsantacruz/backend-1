@@ -1,0 +1,7 @@
+[
+  { "id": 1, "title": "Club de Nuit EDT", "description": "Un clásico moderno con notas cítricas, madera y un fondo ahumado intenso.", "code": "PERF002", "price": 40000, "status": true, "stock": 10, "category": "Hombre", "thumbnails": ["/img/clubdenuit.jpg"] },
+  { "id": 2, "title": "Animale men EDT", "description": "Fragancia audaz y sofisticada con notas de menta, cítricos y lavanda.", "code": "PERF003", "price": 40000, "status": true, "stock": 10, "category": "Hombre", "thumbnails": ["/img/animale.jpg"] },
+  { "id": 3, "title": "Honor and Glory", "description": "Aroma oriental especiado con oud, ideal para quienes buscan intensidad.", "code": "PERF004", "price": 60000, "status": true, "stock": 10, "category": "Unisex", "thumbnails": ["/img/badeealoud.jpg"] },
+  { "id": 4, "title": "Emper Stallion", "description": "Una fragancia potente y masculina con toques amaderados y especiados.", "code": "PERF005", "price": 40000, "status": true, "stock": 10, "category": "Hombre", "thumbnails": ["/img/emperstallion.jpg"] },
+  { "id": 5, "title": "Versace Eros Flame", "description": "Pasión y fuerza en una botella. Notas de chinotto, limón y pimienta negra.", "code": "PERF006", "price": 90000, "status": true, "stock": 10, "category": "Hombre", "thumbnails": ["/img/versaceflame.jpg"] }
+]

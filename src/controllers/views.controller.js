@@ -1,8 +1,4 @@
-import ProductManagerMongo from '../dao/mongo/ProductManagerMongo.js';
-import CartManagerMongo from '../dao/mongo/CartManagerMongo.js';
-
-const productManager = new ProductManagerMongo();
-const cartManager = new CartManagerMongo();
+import { productManager, cartManager } from '../dao/factory.js';
 
 export const renderProducts = async (req, res) => {
     try {
